@@ -25,6 +25,7 @@ namespace Reshbot {
             await _client.SetGameAsync("vibing");
             await _client.StartAsync();
 
+
             _client.Log += Logger.Log;
 
             _client.Ready += _ready.HandleEventAsync;
