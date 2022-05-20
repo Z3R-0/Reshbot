@@ -9,6 +9,7 @@ namespace Reshbot.Modules.Commands {
             await Context.Interaction.UpdateAsync(m =>
             {
                 m.Content = "I have been clicked!";
+                m.Components = null;
             });
             await FollowupAsync($"{Context.User.Username} has clicked the button");
         }
