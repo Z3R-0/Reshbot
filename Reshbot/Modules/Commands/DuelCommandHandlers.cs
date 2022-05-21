@@ -2,9 +2,11 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Reshbot.ReshDiscordUtils;
+using Reshbot.SQLModels;
 
 namespace Reshbot.Modules.Commands {
     public class DuelCommandHandlers : BotInteraction<SocketMessageComponent> {
+        private DuelDataSystem _duelDataSystem = DuelDataSystem.instance;
 
         [ComponentInteraction("click_yes:*")]
         public async Task HandleYesButton(ulong challengerId) {
@@ -46,6 +48,8 @@ namespace Reshbot.Modules.Commands {
                 m.Content = $"{Context.Guild.GetUser(challengerId).Mention} has won!";
                 m.Components = null;
             });
+
+            _duelDataSystem.CreateTable();
         }
     }
 }

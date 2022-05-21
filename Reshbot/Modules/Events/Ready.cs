@@ -1,5 +1,6 @@
 ﻿using Discord.Interactions;
 using Discord.WebSocket;
+using Reshbot.Config;
 using Reshbot.ReshDiscordUtils;
 
 namespace Reshbot.Modules.Events {
@@ -24,7 +25,7 @@ namespace Reshbot.Modules.Events {
 
         private async void RegisterCommand() {
 #if DEBUG
-            await _interactionService.RegisterCommandsToGuildAsync(ulong.Parse(File.ReadAllText("Config/DebugGuildID.txt")));
+            await _interactionService.RegisterCommandsToGuildAsync(ulong.Parse(config.DebugGuildID));
 #else
             await _interactionService.RegisterCommandsGloballyAsync();
 #endif

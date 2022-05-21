@@ -8,7 +8,7 @@ using System.Xml.Serialization;
 
 namespace ReshUtils.Data {
 
-    public abstract class IModel {
+    public abstract class IXMLModel {
 
         DateTime created_at { get; }
         DateTime last_updated { get; set; }
@@ -17,7 +17,7 @@ namespace ReshUtils.Data {
     public abstract class IXMLDataSystem {
 
         XmlSerializer Serializer { get; }
-        IModel DataModel { get; }
+        IXMLModel DataModel { get; }
         TextWriter TextWriter { get; }
         string DataPath { get; set; }
         Stream ReadStream { get; }
@@ -35,7 +35,7 @@ namespace ReshUtils.Data {
             ReadStream = new FileStream(path, FileMode.Open);
         }
 
-        public void Serialize(IModel objectToSerialize) {
+        public void Serialize(IXMLModel objectToSerialize) {
             Serializer.Serialize(TextWriter, objectToSerialize);
         }
 

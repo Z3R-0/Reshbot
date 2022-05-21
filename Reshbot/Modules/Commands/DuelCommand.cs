@@ -2,14 +2,9 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Reshbot.ReshDiscordUtils;
-using Reshbot.XMLModels;
 
 namespace Reshbot.Modules.Commands {
     public class DuelCommand : BotInteraction<SocketSlashCommand> {
-
-        private List<Duel> _pastDuels = new List<Duel>();
-        private DuelDataSystem _duelDataSystem = DuelDataSystem.instance;
-
         [SlashCommand("duel", "duel command")]
         public async Task DuelAsync(SocketGuildUser user) {
 

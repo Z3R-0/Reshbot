@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.WebSocket;
+using Reshbot.Config;
 using Reshbot.Modules.Events;
 using Reshbot.ReshDiscordUtils;
 
@@ -21,7 +22,7 @@ namespace Reshbot {
         }
 
         public async Task RunAsync() {
-            await _client.LoginAsync(TokenType.Bot, File.ReadAllText("Config/token.txt"));
+            await _client.LoginAsync(TokenType.Bot, config.token);
             await _client.SetGameAsync("vibing");
             await _client.StartAsync();
 
