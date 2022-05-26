@@ -21,7 +21,7 @@ namespace Reshbot.Modules.Commands {
 
             var shoot_btn = new ButtonBuilder {
                 Label = "Shoot",
-                CustomId = "click_shoot:" + challengerId, // append the challenger's ID so it can be retrieved in the handler
+                CustomId = "click_shoot:" + $"{challengerId},{Context.User.Id}", // append the challenger's ID so it can be retrieved in the handler
                 Style = ButtonStyle.Primary,
             };
 
@@ -42,14 +42,14 @@ namespace Reshbot.Modules.Commands {
             await FollowupAsync($"{Context.User.Username} is a coward...");
         }
 
-        [ComponentInteraction("click_shoot:*")]
-        public async Task HandleShootButton(ulong challengerId) {
+        [ComponentInteraction("click_shoot:*,*")]
+        public async Task HandleShootButton(ulong challengerId, ulong challengedid) {
             await Context.Interaction.UpdateAsync(m => {
-                m.Content = $"{Context.Guild.GetUser(challengerId).Mention} has won!";
+                m.Content = $"{Context.User.Mention} has won!";
                 m.Components = null;
             });
 
-            _duelDataSystem.CreateTable();
+            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedid.ToString(), Context.User.Id.ToString()));
         }
     }
 }

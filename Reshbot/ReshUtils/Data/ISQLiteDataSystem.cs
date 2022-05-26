@@ -13,18 +13,12 @@ namespace ReshUtils.Data {
             get {
                 if (_sqliteConnection == null) {
                     _sqliteConnection = new SqliteConnection($"Data Source={config.database};Cache=Shared");
-
-                    try {
-                        SqliteConnection.Open();
-                    } catch (Exception ex) {
-                        Console.WriteLine(ex.Message);
-                    }
                 }
 
                 return _sqliteConnection;
             }
         }
 
-        public virtual void CreateTable() { }
+        public virtual void CreateTableIfNotExists() { }
     }
 }

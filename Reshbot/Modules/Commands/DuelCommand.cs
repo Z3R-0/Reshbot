@@ -13,10 +13,10 @@ namespace Reshbot.Modules.Commands {
                 await RespondAsync("You can't duel bots, we are all-powerful B)", ephemeral: true);
                 return;
             }
-            /*if (Context.User.Id == user.Id) {
+            if (Context.User.Id == user.Id) {
                 await RespondAsync("You cannot duel your own demons though Discord...", ephemeral: true);
                 return;
-            }*/
+            }
             #endregion
 
             var yes_btn = new ButtonBuilder {

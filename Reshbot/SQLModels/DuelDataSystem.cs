@@ -14,8 +14,10 @@ namespace Reshbot.SQLModels {
         public string ChallengedId;
         public string VictorId;
 
-        public Duel(int id) {
-            Id = id;
+        public Duel(string challenger_id, string challenged_id, string victor_id) {
+            ChallengerId = challenger_id;
+            ChallengedId = challenged_id;
+            VictorId = victor_id;
         }
     }
 
@@ -35,10 +37,27 @@ namespace Reshbot.SQLModels {
             private set { _instance = value; }
         }
 
-        public override void CreateTable() {
+        public void Insert(Duel duel) {
+            SqliteConnection.Open();
+            SqliteCommand insert_command = SqliteConnection.CreateCommand();
+
+            insert_command.CommandText = "INSERT INTO Duels (ChallengerId, ChallengedId, VictorId) " +
+                $"VALUES ({duel.ChallengerId}, {duel.ChallengedId}, {duel.VictorId})";
+
+            insert_command.ExecuteNonQuery();
+        }
+
+        public void InsertMany(List<Duel> duelList) {
+            foreach (Duel duel in duelList) {
+                Insert(duel);
+            }
+        }
+
+        public override void CreateTableIfNotExists() {
+            SqliteConnection.Open();
             SqliteCommand sqlite_command = SqliteConnection.CreateCommand();
 
-            sqlite_command.CommandText = "CREATE TABLE Duels(" +
+            sqlite_command.CommandText = "CREATE TABLE IF NOT EXISTS Duels(" +
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "ChallengerId TEXT NOT NULL," +
                 "ChallengedId TEXT NOT NULL," +
