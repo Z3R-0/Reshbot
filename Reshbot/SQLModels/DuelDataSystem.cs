@@ -22,7 +22,9 @@ namespace Reshbot.SQLModels {
     }
 
     public class DuelDataSystem : ISQLiteDataSystem {
-        public DuelDataSystem(Type dataModel) : base() { }
+        public DuelDataSystem(Type dataModel) : base() {
+            CreateTableIfNotExists();
+        }
 
         private static DuelDataSystem _instance;
 
