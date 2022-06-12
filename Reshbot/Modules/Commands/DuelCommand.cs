@@ -5,6 +5,11 @@ using Reshbot.ReshDiscordUtils;
 
 namespace Reshbot.Modules.Commands {
     public class DuelCommand : BotInteraction<SocketSlashCommand> {
+        
+        /// <summary>
+        /// Send a message to the user, and if they click the yes button, duel the challenger.
+        /// </summary>
+        /// <param name="SocketGuildUser">The user you want to duel</param>
         [SlashCommand("duel", "duel command")]
         public async Task DuelAsync(SocketGuildUser user) {
 
