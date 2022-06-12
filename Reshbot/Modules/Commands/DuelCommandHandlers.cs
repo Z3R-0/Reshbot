@@ -5,6 +5,7 @@ using Reshbot.ReshDiscordUtils;
 using Reshbot.SQLModels;
 
 namespace Reshbot.Modules.Commands {
+    /* This class is a BotInteraction that handles commands related to duels. */
     public class DuelCommandHandlers : BotInteraction<SocketMessageComponent> {
         private DuelDataSystem _duelDataSystem = DuelDataSystem.instance;
 
