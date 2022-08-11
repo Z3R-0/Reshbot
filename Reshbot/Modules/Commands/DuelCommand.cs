@@ -1,11 +1,14 @@
 ﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Data.Sqlite;
 using Reshbot.ReshDiscordUtils;
+using Reshbot.SQLModels;
 
 namespace Reshbot.Modules.Commands {
     public class DuelCommand : BotInteraction<SocketSlashCommand> {
-        
+        private DuelDataSystem _duelDataSystem = DuelDataSystem.instance;
+
         /// <summary>
         /// Send a message to the user, and if they click the yes button, duel the challenger.
         /// </summary>
@@ -37,6 +40,26 @@ namespace Reshbot.Modules.Commands {
             };
 
             await RespondAsync($"{user.Mention}, do you accept the challenge?", components: new ComponentBuilder().WithButton(yes_btn).WithButton(no_btn).Build());
+        }
+
+        [SlashCommand("duel_leaderboard", "see the duel leaderboard")]
+        public async Task LeaderboardAsync() {
+            EmbedBuilder embedBuilder = DiscordUtilityMethods.GetEmbedBuilder("Reshbot Duel Leaderboard (ordered by # of wins)");
+
+            SqliteDataReader data_reader = _duelDataSystem.GetDuelsWithQuery("SELECT VictorId, COUNT(VictorId) FROM Duels " +
+                            "GROUP BY VictorId " +
+                            "ORDER BY COUNT(VictorId) DESC" +
+                            "LIMIT 15;");
+
+            string result = "";
+
+            while (data_reader.Read()) {
+                result += $"\n{Context.Guild.GetUser(ulong.Parse(data_reader.GetString(0)))} --- {data_reader.GetInt32(1)}";
+            }
+
+            embedBuilder.WithDescription(result);
+
+            await RespondAsync(embed: embedBuilder.Build());
         }
     }
 }

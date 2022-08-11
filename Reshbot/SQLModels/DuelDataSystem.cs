@@ -67,5 +67,32 @@ namespace Reshbot.SQLModels {
 
             sqlite_command.ExecuteNonQuery();
         }
+
+        public SqliteDataReader GetDuelsWithQuery(string query) {
+            SqliteConnection.Open();
+            SqliteCommand sqlite_command = SqliteConnection.CreateCommand();
+
+            sqlite_command.CommandText = query;
+            return sqlite_command.ExecuteReader();
+        }
+
+        public List<Duel> GetDuels() {
+            List<Duel> duels = new List<Duel>();
+            SqliteConnection.Open();
+            SqliteCommand sqlite_command = SqliteConnection.CreateCommand();
+
+            sqlite_command.CommandText = "SELECT * FROM Duels";
+            SqliteDataReader sqliteDataReader = sqlite_command.ExecuteReader();
+
+            while (sqliteDataReader.Read()) {
+                Duel new_duel = new Duel(sqliteDataReader.GetString(1), sqliteDataReader.GetString(2), sqliteDataReader.GetString(3));
+
+                new_duel.Id = sqliteDataReader.GetInt32(0);
+
+                duels.Add(new_duel);
+            }
+
+            return duels;
+        }
     }
 }
