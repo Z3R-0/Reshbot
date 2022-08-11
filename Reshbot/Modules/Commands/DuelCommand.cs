@@ -15,6 +15,9 @@ namespace Reshbot.Modules.Commands {
         /// <param name="SocketGuildUser">The user you want to duel</param>
         [SlashCommand("duel", "duel command")]
         public async Task DuelAsync(SocketGuildUser user) {
+            Logger.Log("A");
+            Logger.Log("test: " + user.Id);
+            Logger.Log("B");
 
             #region Knockout Criteria
             if (user.IsBot) {
@@ -29,13 +32,13 @@ namespace Reshbot.Modules.Commands {
 
             var yes_btn = new ButtonBuilder {
                 Label = "Yes",
-                CustomId = "click_yes:" + Context.User.Id, // append the challenger's ID so it can be retrieved in the handler
+                CustomId = "click_yes:" + Context.User.Id + "," + user.Id, // append the challenger's and challenged's ID so it can be retrieved in the handler
                 Style = ButtonStyle.Success,
             };
 
             var no_btn = new ButtonBuilder {
                 Label = "No",
-                CustomId = "click_no:" + Context.User.Id, // append the challenger's ID so it can be retrieved in the handler
+                CustomId = "click_no:" + Context.User.Id + "," + user.Id, // append the challenger's and challenged's ID so it can be retrieved in the handler
                 Style = ButtonStyle.Danger,
             };
 

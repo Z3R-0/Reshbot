@@ -19,9 +19,18 @@ namespace Reshbot.Modules.Commands {
         /// the user's ID), and then sends a message to the channel with the button.
         /// </summary>
         /// <param name="challengerId">The ID of the user who challenged the current user.</param>
-        [ComponentInteraction("click_yes:*")]
-        public async Task HandleYesButton(ulong challengerId) {
+        [ComponentInteraction("click_yes:*,*")]
+        public async Task HandleYesButton(ulong challengerId, ulong challengedId) {
+            if (Context.User.Id != challengedId)
+                return;
+
             SocketGuildUser challenger = Context.Guild.GetUser(challengerId);
+            SocketGuildUser challenged = Context.Guild.GetUser(challengedId);
+
+            if (challenger == null) {
+                await RespondAsync("The provided user/id was invalid", ephemeral: true);
+                return;
+            }
 
             await Context.Interaction.UpdateAsync(m => {
                 m.Content = "Duel initiated!";
