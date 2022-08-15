@@ -30,10 +30,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="XMLModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Config\config.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>

@@ -21,8 +21,10 @@ namespace Reshbot.Modules.Commands {
         /// <param name="challengerId">The ID of the user who challenged the current user.</param>
         [ComponentInteraction("click_yes:*,*")]
         public async Task HandleYesButton(ulong challengerId, ulong challengedId) {
-            if (Context.User.Id != challengedId)
+            if (Context.User.Id != challengedId) {
+                await RespondAsync("You are not the intended user for interacting with these buttons", ephemeral: true);
                 return;
+            }
 
             SocketGuildUser challenger = Context.Guild.GetUser(challengerId);
             SocketGuildUser challenged = Context.Guild.GetUser(challengedId);
@@ -55,8 +57,13 @@ namespace Reshbot.Modules.Commands {
         /// user is called a coward
         /// </summary>
         /// <param name="challengerId">The ID of the user who challenged you.</param>
-        [ComponentInteraction("click_no:*")]
-        public async Task HandleNoButton(ulong challengerId) {
+        [ComponentInteraction("click_no:*,*")]
+        public async Task HandleNoButton(ulong challengerId, ulong challengedId) {
+            if (Context.User.Id != challengedId) {
+                await RespondAsync("You are not the intended user for interacting with these buttons", ephemeral: true);
+                return;
+            }
+
             SocketGuildUser challenger = Context.Guild.GetUser(challengerId);
 
             await Context.Interaction.UpdateAsync(m => {
@@ -75,6 +82,11 @@ namespace Reshbot.Modules.Commands {
         /// <param name="challengedid">The id of the person who was challenged</param>
         [ComponentInteraction("click_shoot:*,*")]
         public async Task HandleShootButton(ulong challengerId, ulong challengedid) {
+            if (Context.User.Id != challengerId && Context.User.Id != challengedid) {
+                await RespondAsync("You are not the intended user for interacting with these buttons", ephemeral: true);
+                return;
+            }
+
             await Context.Interaction.UpdateAsync(m => {
                 m.Content = $"{Context.User.Mention} has won!";
                 m.Components = null;

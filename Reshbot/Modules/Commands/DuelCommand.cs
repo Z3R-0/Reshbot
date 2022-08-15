@@ -47,11 +47,11 @@ namespace Reshbot.Modules.Commands {
             EmbedBuilder embedBuilder = DiscordUtilityMethods.GetEmbedBuilder("Reshbot Duel Leaderboard (ordered by # of wins)");
 
             Leaderboard leaderboard = _duelDataSystem.GetLeaderboard(Context.Guild.Id.ToString());
-
             if (leaderboard.Rows.Count != 0)
                 embedBuilder.WithDescription(leaderboard.ToString());
             else
                 embedBuilder.WithDescription("No duels recorded yet on this server");
+
 
             await RespondAsync(embed: embedBuilder.Build());
         }

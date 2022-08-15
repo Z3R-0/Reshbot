@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 using Reshbot.Config;
+using Reshbot.ReshDiscordUtils;
 using ReshUtils.Data;
 
 namespace Reshbot.SQLModels {
@@ -111,6 +112,8 @@ namespace Reshbot.SQLModels {
                 leaderboard.Rows.Add(new LeaderboardRow(reader.GetString(0), reader.GetInt32(1)));
             }
 
+            reader.Close();
+
             return leaderboard;
         }
         
@@ -135,6 +138,8 @@ namespace Reshbot.SQLModels {
 
                 duels.Add(new_duel);
             }
+
+            sqliteDataReader.Close();
 
             return duels;
         }
