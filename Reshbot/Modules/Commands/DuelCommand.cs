@@ -15,9 +15,6 @@ namespace Reshbot.Modules.Commands {
         /// <param name="SocketGuildUser">The user you want to duel</param>
         [SlashCommand("duel", "duel command")]
         public async Task DuelAsync(SocketGuildUser user) {
-            Logger.Log("A");
-            Logger.Log("test: " + user.Id);
-            Logger.Log("B");
 
             #region Knockout Criteria
             if (user.IsBot) {
@@ -49,18 +46,12 @@ namespace Reshbot.Modules.Commands {
         public async Task LeaderboardAsync() {
             EmbedBuilder embedBuilder = DiscordUtilityMethods.GetEmbedBuilder("Reshbot Duel Leaderboard (ordered by # of wins)");
 
-            SqliteDataReader data_reader = _duelDataSystem.GetDuelsWithQuery("SELECT VictorId, COUNT(VictorId) FROM Duels " +
-                            "GROUP BY VictorId " +
-                            "ORDER BY COUNT(VictorId) DESC" +
-                            "LIMIT 15;");
+            Leaderboard leaderboard = _duelDataSystem.GetLeaderboard(Context.Guild.Id.ToString());
 
-            string result = "";
-
-            while (data_reader.Read()) {
-                result += $"\n{Context.Guild.GetUser(ulong.Parse(data_reader.GetString(0)))} --- {data_reader.GetInt32(1)}";
-            }
-
-            embedBuilder.WithDescription(result);
+            if (leaderboard.Rows.Count != 0)
+                embedBuilder.WithDescription(leaderboard.ToString());
+            else
+                embedBuilder.WithDescription("No duels recorded yet on this server");
 
             await RespondAsync(embed: embedBuilder.Build());
         }

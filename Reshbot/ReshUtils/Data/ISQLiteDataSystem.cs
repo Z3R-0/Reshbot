@@ -19,6 +19,6 @@ namespace ReshUtils.Data {
             }
         }
 
-        public virtual void CreateTableIfNotExists() { }
+        public virtual void CreateTableIfNotExists(string guildId) { }
     }
 }

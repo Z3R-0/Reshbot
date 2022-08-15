@@ -80,7 +80,7 @@ namespace Reshbot.Modules.Commands {
                 m.Components = null;
             });
 
-            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedid.ToString(), Context.User.Id.ToString()));
+            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedid.ToString(), Context.User.Id.ToString()), Context.Guild.Id.ToString());
         }
     }
 }

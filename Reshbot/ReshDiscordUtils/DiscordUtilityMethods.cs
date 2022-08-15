@@ -36,7 +36,7 @@ namespace Reshbot.ReshDiscordUtils {
         /// Returns ID of the user mentioned in this message
         /// </summary>
         /// <param name="message">Message to parse</param>
-        public string GetUserIdFromMessage(string message) {
+        public static string GetUserIdFromMessage(string message) {
             return Regex.Match(message, "([0-9])\\w+").Value;
         }
 
