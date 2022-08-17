@@ -23,7 +23,7 @@ namespace Reshbot {
 
         public async Task RunAsync() {
             await _client.LoginAsync(TokenType.Bot, config.token);
-            await _client.SetGameAsync("vibing");
+            await _client.SetGameAsync("just vibing");
             await _client.StartAsync();
 
 

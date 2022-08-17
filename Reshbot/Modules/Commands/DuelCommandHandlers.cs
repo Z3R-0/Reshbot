@@ -41,9 +41,14 @@ namespace Reshbot.Modules.Commands {
 
             await FollowupAsync($"{Context.User.Username} has taken on {challenger.DisplayName}'s challenge, Press the Shoot button as soon as it becomes available, first one to press 'Shoot' wins");
 
+            // Update duel trackers
+            DuelCommand.DuelingUsers.Add(challengerId);
+            DuelCommand.DuelingUsers.Add(challengedId);
+            DuelCommand.DuelRequests.First(duel => duel.ChallengedId == challengedId).HasResponded = true;
+
             var shoot_btn = new ButtonBuilder {
                 Label = "Shoot",
-                CustomId = "click_shoot:" + $"{challengerId},{Context.User.Id}", // append the challenger's ID so it can be retrieved in the handler
+                CustomId = "click_shoot:" + $"{challengerId},{Context.User.Id}", // append the challenger's and challenged's IDs so they can be retrieved in the handler
                 Style = ButtonStyle.Primary,
             };
 
@@ -66,6 +71,9 @@ namespace Reshbot.Modules.Commands {
 
             SocketGuildUser challenger = Context.Guild.GetUser(challengerId);
 
+
+            DuelCommand.DuelRequests.First(duel => duel.ChallengedId == challengedId).HasResponded = true;
+
             await Context.Interaction.UpdateAsync(m => {
                 m.Content = "Duel denied!";
                 m.Components = null;
@@ -79,10 +87,10 @@ namespace Reshbot.Modules.Commands {
         /// user has won, and then insert a new duel into the database
         /// </summary>
         /// <param name="challengerId">The ID of the user who started the duel.</param>
-        /// <param name="challengedid">The id of the person who was challenged</param>
+        /// <param name="challengedId">The id of the person who was challenged</param>
         [ComponentInteraction("click_shoot:*,*")]
-        public async Task HandleShootButton(ulong challengerId, ulong challengedid) {
-            if (Context.User.Id != challengerId && Context.User.Id != challengedid) {
+        public async Task HandleShootButton(ulong challengerId, ulong challengedId) {
+            if (Context.User.Id != challengerId && Context.User.Id != challengedId) {
                 await RespondAsync("You are not the intended user for interacting with these buttons", ephemeral: true);
                 return;
             }
@@ -92,7 +100,10 @@ namespace Reshbot.Modules.Commands {
                 m.Components = null;
             });
 
-            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedid.ToString(), Context.User.Id.ToString()), Context.Guild.Id.ToString());
+            DuelCommand.DuelingUsers.Remove(challengedId);
+            DuelCommand.DuelingUsers.Remove(challengerId);
+
+            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedId.ToString(), Context.User.Id.ToString()), Context.Guild.Id.ToString());
         }
     }
 }
