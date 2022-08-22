@@ -47,7 +47,7 @@ namespace Reshbot.Modules.Commands {
                 await RespondAsync("You cannot duel your own demons though Discord...", ephemeral: true);
                 return;
             }
-
+            
             if (DuelingUsers.Contains(user.Id)) {
                 await RespondAsync("This user is already in a duel...", ephemeral: true);
                 return;
@@ -75,18 +75,12 @@ namespace Reshbot.Modules.Commands {
         }
 
         private async Task UpdateQueue() {
-            Logger.Log(DuelRequests.Count);
-
             if (DuelRequests.Peek() == null)
                 return;
 
             TimeSpan timeSpan = DuelRequests.Peek().RequestedAt.AddMilliseconds(TIMEOUT_MS) - DateTime.Now;
 
-            Logger.Log(timeSpan.Milliseconds);
-
             await Task.Delay(timeSpan.Milliseconds + TIMEOUT_MS);
-
-            Logger.Log(DuelRequests.Peek().HasResponded);
 
             if (!DuelRequests.Peek().HasResponded) {
                 await DuelRequests.Peek().OriginalMessage.ModifyAsync(msg => {

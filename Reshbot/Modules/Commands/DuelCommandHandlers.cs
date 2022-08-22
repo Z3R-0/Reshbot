@@ -71,7 +71,6 @@ namespace Reshbot.Modules.Commands {
 
             SocketGuildUser challenger = Context.Guild.GetUser(challengerId);
 
-
             DuelCommand.DuelRequests.First(duel => duel.ChallengedId == challengedId).HasResponded = true;
 
             await Context.Interaction.UpdateAsync(m => {
@@ -103,7 +102,11 @@ namespace Reshbot.Modules.Commands {
             DuelCommand.DuelingUsers.Remove(challengedId);
             DuelCommand.DuelingUsers.Remove(challengerId);
 
-            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedId.ToString(), Context.User.Id.ToString()), Context.Guild.Id.ToString());
+            IUserMessage msg = await GetOriginalResponseAsync();
+
+            TimeSpan responseTime = DateTime.UtcNow - msg.Timestamp;
+
+            _duelDataSystem.Insert(new Duel(challengerId.ToString(), challengedId.ToString(), Context.User.Id.ToString(), DateTime.UtcNow, responseTime.Milliseconds), Context.Guild.Id.ToString());
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using Microsoft.Data.Sqlite;
-using Reshbot.Config;
 using Reshbot.ReshDiscordUtils;
 using ReshUtils.Data;
 
@@ -10,11 +9,15 @@ namespace Reshbot.SQLModels {
         public string ChallengerId;
         public string ChallengedId;
         public string VictorId;
+        public DateTime TimeOfDuel;
+        public int VictorResponseTime;
 
-        public Duel(string challenger_id, string challenged_id, string victor_id) {
+        public Duel(string challenger_id, string challenged_id, string victor_id, DateTime timeOfDuel, int victorResponseTime) {
             ChallengerId = challenger_id;
             ChallengedId = challenged_id;
             VictorId = victor_id;
+            TimeOfDuel = timeOfDuel;
+            VictorResponseTime = victorResponseTime;
         }
     }
 
@@ -74,8 +77,8 @@ namespace Reshbot.SQLModels {
         public void Insert(Duel duel, string guildId) {
             SqliteCommand insert_command = OpenSqlConnection(guildId);
 
-            insert_command.CommandText = $"INSERT INTO Duels{guildId} (ChallengerId, ChallengedId, VictorId) " +
-                $"VALUES ({duel.ChallengerId}, {duel.ChallengedId}, {duel.VictorId})";
+            insert_command.CommandText = $"INSERT INTO Duels{guildId} (ChallengerId, ChallengedId, VictorId, TimeOfDuel, VictorResponseTime) " +
+                $"VALUES ({duel.ChallengerId}, {duel.ChallengedId}, {duel.VictorId}, \"{duel.TimeOfDuel}\", {duel.VictorResponseTime})";
 
             insert_command.ExecuteNonQuery();
         }
@@ -95,7 +98,9 @@ namespace Reshbot.SQLModels {
                 "ID INTEGER PRIMARY KEY AUTOINCREMENT," +
                 "ChallengerId TEXT NOT NULL," +
                 "ChallengedId TEXT NOT NULL," +
-                "VictorId TEXT NOT NULL);";
+                "VictorId TEXT NOT NULL," +
+                "TimeOfDuel TEXT NOT NULL," +
+                "VictorResponseTime INTEGER NOT NULL);";
 
             sqlite_command.ExecuteNonQuery();
         }
@@ -132,7 +137,7 @@ namespace Reshbot.SQLModels {
             SqliteDataReader sqliteDataReader = sqlite_command.ExecuteReader();
 
             while (sqliteDataReader.Read()) {
-                Duel new_duel = new Duel(sqliteDataReader.GetString(1), sqliteDataReader.GetString(2), sqliteDataReader.GetString(3));
+                Duel new_duel = new Duel(sqliteDataReader.GetString(1), sqliteDataReader.GetString(2), sqliteDataReader.GetString(3), sqliteDataReader.GetDateTime(4), sqliteDataReader.GetInt32(5));
 
                 new_duel.Id = sqliteDataReader.GetInt32(0);
 
