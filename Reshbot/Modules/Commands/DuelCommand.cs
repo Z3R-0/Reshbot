@@ -119,7 +119,7 @@ namespace Reshbot.Modules.Commands {
                                          $"Winrate: {user_stats.WinRate}%\n" +
                                          $"Average response time: {user_stats.AverageResponseTime}\n");
 
-            embedBuilder.WithImageUrl(user.GetGuildAvatarUrl() ?? user.GetAvatarUrl(size: 4096));
+            embedBuilder.WithImageUrl(user.GetGuildAvatarUrl(size: 1024) ?? user.GetAvatarUrl(size: 1024));
 
             await RespondAsync(embed: embedBuilder.Build());
         }
