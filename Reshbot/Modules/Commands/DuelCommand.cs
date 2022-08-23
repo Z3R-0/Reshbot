@@ -27,6 +27,7 @@ namespace Reshbot.Modules.Commands {
         public static Queue<DuelRequest> DuelRequests = new Queue<DuelRequest>();
 
         private DuelDataSystem _duelDataSystem = DuelDataSystem.instance;
+        
         private const int TIMEOUT_MS = 30000;
 
         /// <summary>
@@ -96,12 +97,29 @@ namespace Reshbot.Modules.Commands {
         public async Task LeaderboardAsync() {
             EmbedBuilder embedBuilder = DiscordUtilityMethods.GetEmbedBuilder("Reshbot Duel Leaderboard (ordered by # of wins)");
 
-            Leaderboard leaderboard = _duelDataSystem.GetLeaderboard(Context.Guild.Id.ToString());
+            DuelLeaderboard leaderboard = _duelDataSystem.GetLeaderboard(Context.Guild.Id.ToString());
             if (leaderboard.Rows.Count != 0)
                 embedBuilder.WithDescription(leaderboard.ToString());
             else
                 embedBuilder.WithDescription("No duels recorded yet on this server");
 
+
+            await RespondAsync(embed: embedBuilder.Build());
+        }
+
+        [SlashCommand("duel_stats", "see duel-related info on a user")]
+        public async Task DuelStatsAsync(SocketGuildUser user) {
+            EmbedBuilder embedBuilder = DiscordUtilityMethods.GetEmbedBuilder("Reshbot Duel Stats");
+
+            DuelStats user_stats = _duelDataSystem.GetDuelStats(Context.Guild.Id.ToString(), user.Id.ToString());
+
+            embedBuilder.WithDescription($"User: {user.DisplayName}\n" +
+                                         $"Number of wins: {user_stats.NumberOfWins}\n" +
+                                         $"Number of duels: {user_stats.NumberOfDuels}\n" +
+                                         $"Winrate: {user_stats.WinRate}%\n" +
+                                         $"Average response time: {user_stats.AverageResponseTime}\n");
+
+            embedBuilder.WithImageUrl(user.GetGuildAvatarUrl() ?? user.GetAvatarUrl(size: 4096));
 
             await RespondAsync(embed: embedBuilder.Build());
         }
