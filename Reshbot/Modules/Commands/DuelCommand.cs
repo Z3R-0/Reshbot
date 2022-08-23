@@ -2,6 +2,7 @@
 using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Data.Sqlite;
+using QuickChart;
 using Reshbot.ReshDiscordUtils;
 using Reshbot.SQLModels;
 using System.Collections;
@@ -117,9 +118,12 @@ namespace Reshbot.Modules.Commands {
                                          $"Number of wins: {user_stats.NumberOfWins}\n" +
                                          $"Number of duels: {user_stats.NumberOfDuels}\n" +
                                          $"Winrate: {user_stats.WinRate}%\n" +
-                                         $"Average response time: {user_stats.AverageResponseTime}\n");
+                                         $"Average response time: {user_stats.AverageResponseTime}\n" +
+                                         $"\nResponse times in the last few duels:");
 
-            embedBuilder.WithImageUrl(user.GetGuildAvatarUrl(size: 1024) ?? user.GetAvatarUrl(size: 1024));
+            Chart avgResponseTimeChart = DiscordUtilityMethods.GetDuelResponseTimeChart(_duelDataSystem.GetDuelsFromUser(Context.Guild.Id.ToString(), user.Id.ToString(), limit: 5));
+
+            embedBuilder.WithImageUrl(avgResponseTimeChart.GetShortUrl());
 
             await RespondAsync(embed: embedBuilder.Build());
         }

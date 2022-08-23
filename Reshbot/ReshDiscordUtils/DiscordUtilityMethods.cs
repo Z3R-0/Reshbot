@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using System.Text.RegularExpressions;
 using Reshbot;
 using Discord;
+using QuickChart;
+using Reshbot.SQLModels;
 
 namespace Reshbot.ReshDiscordUtils {
     public class DiscordUtilityMethods : BotInteraction<SocketSlashCommand>{
@@ -52,6 +54,32 @@ namespace Reshbot.ReshDiscordUtils {
             embedBuilder.Footer = new EmbedFooterBuilder().WithText("Reshbot - Created by Spade#7981\nhttps://discord.gg/cXyZZAdpaR");
 
             return embedBuilder;
+        }
+
+        public static Chart GetDuelResponseTimeChart(List<Duel> duels) {
+            Chart averageResponseChart = new Chart();
+
+            string labels = "";
+            string data = "";
+
+            foreach (Duel duelItem in duels) {
+                labels += $"'{duelItem.TimeOfDuel}', ";
+                data += $"{duelItem.VictorResponseTime}, ";
+            }
+
+            averageResponseChart.Config = "{" +
+                                          "type: 'line'," +
+                                          "data: {" +
+                                          $"    labels: [{labels}]," +
+                                          "    datasets: [" +
+                                          "    {" +
+                                          "       label: 'Response Time'," +
+                                          $"       data: [{data}]" +
+                                          "    }]" +
+                                          "  }" +
+                                          "}";
+
+            return averageResponseChart;
         }
     }
 }

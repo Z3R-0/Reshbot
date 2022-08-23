@@ -88,11 +88,18 @@ namespace Reshbot.SQLModels {
             return sqlite_command.ExecuteReader();
         }
 
-        public List<Duel> GetDuels(string guildId) {
+        public List<Duel> GetDuelsFromUser(string guildId, string userId, int? limit = null) {
             List<Duel> duels = new List<Duel>();
             SqliteCommand sqlite_command = OpenSqlConnection(guildId);
 
-            sqlite_command.CommandText = $"SELECT * FROM Duels{guildId}";
+            sqlite_command.CommandText = $"SELECT * FROM Duels{guildId} " +
+                                         $"WHERE (ChallengedId = {userId} OR ChallengerId = {userId})";
+
+            if (limit != null)
+                sqlite_command.CommandText += $" LIMIT {limit}";
+
+            sqlite_command.CommandText += ";";
+
             SqliteDataReader sqliteDataReader = sqlite_command.ExecuteReader();
 
             while (sqliteDataReader.Read()) {
