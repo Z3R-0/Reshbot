@@ -113,16 +113,23 @@ namespace Reshbot.SQLModels {
                                                            $"FROM Duels{guildId} " +
                                                            $"WHERE (ChallengedId = {userId} OR ChallengerId = {userId});", guildId);
 
-            object stats = null;
+            DuelStats stats = new DuelStats();
 
             while (reader.Read()) {
-                stats = new DuelStats(userId, reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(0) / reader.GetInt32(1) * 100, reader.GetInt32(2));
+                stats.UserId = userId;
+                stats.NumberOfDuels = reader.GetInt32(1);
+                stats.AverageResponseTime = reader.GetInt32(2);
             }
 
-            if(stats != null)
-                return (DuelStats)stats;
-            else
-                return null;
+            SqliteDataReader reader2 = SelectDuelsWithQuery($"COUNT(VictorId) FROM Duels{guildId} " +
+                                                            $"WHERE VictorId = {userId}", guildId);
+
+            while (reader2.Read()) { 
+                stats.NumberOfWins = reader2.GetInt32(0);
+                stats.WinRate = Math.Round(stats.NumberOfWins / (double)stats.NumberOfDuels * 100);
+            }
+
+            return stats;
         }
     }
 
@@ -171,15 +178,17 @@ namespace Reshbot.SQLModels {
         public string UserId;
         public int NumberOfWins;
         public int NumberOfDuels;
-        public int WinRate;
+        public double WinRate;
         public int AverageResponseTime;
 
-        public DuelStats(string userId, int numberOfWins, int numberOfDuels, int winRate, int averageResponseTime) {
+        public DuelStats(string userId, int numberOfWins, int numberOfDuels, double winRate, int averageResponseTime) {
             UserId = userId;
             NumberOfWins = numberOfWins;
             NumberOfDuels = numberOfDuels;
             WinRate = winRate;
             AverageResponseTime = averageResponseTime;
         }
+
+        public DuelStats() { }
     }
 }
