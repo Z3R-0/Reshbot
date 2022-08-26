@@ -25,8 +25,10 @@ namespace Reshbot.Modules.Events {
 
         private async void RegisterCommand() {
 #if DEBUG
+            Logger.Log("Initializing in DEBUG mode");
             await _interactionService.RegisterCommandsToGuildAsync(ulong.Parse(config.DebugGuildID));
 #else
+            Logger.Log("Initializing in RELEASE mode");
             await _interactionService.RegisterCommandsGloballyAsync();
 #endif
         }
